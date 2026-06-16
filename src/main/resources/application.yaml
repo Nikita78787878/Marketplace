@@ -1,0 +1,19 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name:Marketplace
+    port
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/marketplace_db
+    name: marketplace_db
+    username: postgres
+    password: admin
+
+
+  liqubase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+
