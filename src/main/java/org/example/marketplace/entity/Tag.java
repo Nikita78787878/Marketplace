@@ -1,10 +1,9 @@
 package org.example.marketplace.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Tag {
@@ -23,5 +22,17 @@ public class Tag {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag tag)) return false;
+        return Objects.equals(name, tag.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
