@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-product-tag
+      author: nikita
+      changes:
+        - createTable:
+            tableName: product_tag
+            columns:
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: fk_product_tag_product
+                    references: product(id)
+              - column:
+                  name: tag_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName:  fk_product_tag_tag
+                    references: tag(id)
+
