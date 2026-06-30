@@ -3,13 +3,16 @@ databaseChangeLog:
       id: 002-create-tag
       author: nikita
       changes:
+        - createSequence:
+            sequenceName: tag_seq
+            incrementBy: 50
+            startValue: 1
         - createTable:
             tableName: tag
             columns:
               - column:
                   name: id
                   type: bigint
-                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false

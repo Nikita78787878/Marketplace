@@ -3,13 +3,16 @@ databaseChangeLog:
       id: 001-create-category
       author: nikita
       changes:
+        - createSequence:
+            sequenceName: category_seq
+            incrementBy: 50
+            startValue: 1
         - createTable:
             tableName: category
             columns:
               - column:
                   name: id
                   type: bigint
-                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false

@@ -9,7 +9,13 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+    @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 50)
+    /** generator = "product_seq" — ссылка: «id генерится генератором с именем product_seq». Это имя должно совпасть с name ниже.
+     * @SequenceGenerator(name = "product_seq") — внутреннее JPA-имя генератора (на него и ссылается generator). Это не имя в БД, это «ярлык» внутри Java.
+     * sequenceName = "product_seq" — а вот это реальное имя секвенса в БД (то, что в createSequence). Hibernate пойдёт делать nextval('product_seq').
+     * allocationSize = 50 — размер пачки id, которую Hibernate резервирует за один поход в БД. Обязан = incrementBy секвенса.
+     */
     private Long id;
 
     private String name;
