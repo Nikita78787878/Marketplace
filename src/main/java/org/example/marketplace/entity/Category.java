@@ -3,7 +3,6 @@ package org.example.marketplace.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Category {
@@ -45,11 +44,11 @@ public class Category {
         if(o == this) return true;
         if(!(o instanceof Category)) return false;
         Category category = (Category) o;
-        return Objects.equals(name, category.getName());
+        return id != null && id.equals(category.id);
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(name);
+        return getClass().hashCode();
     }
 }

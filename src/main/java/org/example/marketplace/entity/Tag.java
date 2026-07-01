@@ -3,7 +3,6 @@ package org.example.marketplace.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Tag {
@@ -29,11 +28,11 @@ public class Tag {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Tag tag)) return false;
-        return Objects.equals(name, tag.name);
+        return id != null && id.equals(tag.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return getClass().hashCode();
     }
 }
