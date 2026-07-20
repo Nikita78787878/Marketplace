@@ -4,16 +4,13 @@ import org.example.marketplace.dto.CreateProductRequest;
 import org.example.marketplace.dto.ProductResponse;
 import org.example.marketplace.entity.Category;
 import org.example.marketplace.entity.Product;
-import org.example.marketplace.repository.CategoryRepository;
+import org.example.marketplace.entity.Tag;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProductMapper {
-    private final CategoryRepository categoryRepository;
-
-    public ProductMapper(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public ProductResponse entityToDto(Product product){
         return new ProductResponse(
@@ -21,19 +18,21 @@ public class ProductMapper {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStockQuantity()
+                product.getStockQuantity(),
+                product.getCategory().getId(),
+                product.getTags().stream().map(Tag::getId).toList()
         );
     }
 
-    public Product dtoToEntity(CreateProductRequest product){
-        Category category = categoryRepository.findById(product.categoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+    public Product dtoToEntity(CreateProductRequest product, Category category, List<Tag> tags){
 
         return new Product(
                 product.name(),
                 product.description(),
                 product.price(),
                 product.stockQuantity(),
-                category
+                category,
+                tags
         );
     }
 }

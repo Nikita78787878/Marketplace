@@ -1,6 +1,7 @@
 package org.example.marketplace.entity;
 
 import jakarta.persistence.*;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,12 +37,13 @@ public class Product {
     public Product() {
     }
 
-    public Product( String name, String description, BigDecimal price, Integer stockQuantity, Category category) {
+    public Product(String name, String description, BigDecimal price, Integer stockQuantity, Category category, List<Tag> tags) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.category = category;
+        this.tags = tags;
     }
 
     public Long getId() {
@@ -70,6 +72,30 @@ public class Product {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -108,5 +134,6 @@ public class Product {
      * Если бы hashCode зависел от id, объект после сохранения «переехал» бы в другой бакет и пропал из сета.
      * Константный hashCode — именно тот трюк, что решает твой изначальный страх «потеряем объект в мапе».
      */
+
 
 }

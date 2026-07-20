@@ -21,7 +21,7 @@ public class CategoryService {
     }
 
     public Category getProduct(Long id) {
-        return repository.getById(id); // 'getById(ID)' is deprecated что тогда вызывать?
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("нету данного продукта в БД"));
     }
 
     public Category addProduct(Category product) {
@@ -29,7 +29,7 @@ public class CategoryService {
     }
 
     public Category updateProduct(Long id) {
-        return repository.getById(id); // тут подумать надо
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Нету данного продукта в бд"));
     }
 
     public void delete(Long id) {

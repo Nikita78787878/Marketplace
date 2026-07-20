@@ -4,23 +4,27 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.example.marketplace.entity.Tag;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public record CreateProductRequest(
+/**
+ * Специально отдельная сущность, чтобы можно было указать  поля категории и тега
+ */
+public record UpdateProductRequest(
+
         @NotBlank
         String name,
-
         @NotBlank
         String description,
 
-        @Positive
         @NotNull
+        @Positive
         BigDecimal price,
 
-        @PositiveOrZero
         @NotNull
+        @PositiveOrZero
         Integer stockQuantity,
 
         @NotNull
