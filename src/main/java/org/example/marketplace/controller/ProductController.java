@@ -1,11 +1,14 @@
 package org.example.marketplace.controller;
 
-import org.example.marketplace.dto.ProductDto;
+import jakarta.validation.Valid;
+import org.example.marketplace.dto.CreateProductRequest;
+import org.example.marketplace.dto.ProductResponse;
 import org.example.marketplace.entity.Product;
 import org.example.marketplace.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -17,22 +20,22 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProduct(){
+    public List<ProductResponse> getAllProduct(){
         return service.getAllProduct();
     }
 
     @GetMapping("/{id}")
-    public ProductDto getProduct(@PathVariable Long id){
+    public ProductResponse getProduct(@PathVariable Long id){
         return service.getProduct(id);
     }
 
     @PostMapping
-    public Product addProduct(Product product){
+    public ProductResponse addProduct(@Valid @RequestBody CreateProductRequest product){
         return  service.addProduct(product);
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id){
+    public Optional<Product> updateProduct(@PathVariable Long id){
         return  service.updateProduct(id);
     }
 
