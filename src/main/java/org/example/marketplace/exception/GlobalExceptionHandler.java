@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
                 .forEach(fe -> errors.put(fe.getField(), fe.getDefaultMessage()));
 
-        ErrorResponseFieldValid body = new ErrorResponseFieldValid(400, errors);
+        ErrorResponseFieldValid body = ErrorResponseFieldValid.of(400, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }
