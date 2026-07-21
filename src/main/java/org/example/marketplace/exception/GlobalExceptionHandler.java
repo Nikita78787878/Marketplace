@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class) // Смотрим где этот класс вызывается перехватывае и выкидываем
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex){
-        ErrorResponse body = new ErrorResponse(LocalDateTime.now(), 404, ex.getMessage()); // наш формат ошибок
+        ErrorResponse body = new ErrorResponse( 404, ex.getMessage()); // наш формат ошибок
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
                 .forEach(fe -> errors.put(fe.getField(), fe.getDefaultMessage()));
 
-        ErrorResponseFieldValid body = new ErrorResponseFieldValid(LocalDateTime.now(),400, errors);
+        ErrorResponseFieldValid body = new ErrorResponseFieldValid(400, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }
