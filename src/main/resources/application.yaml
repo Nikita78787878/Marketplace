@@ -3,17 +3,28 @@ server:
 
 spring:
   application:
-    name:Marketplace
-    port
+    name: Marketplace
 
   datasource:
     url: jdbc:postgresql://localhost:5432/marketplace_db
-    name: marketplace_db
     username: postgres
     password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
 
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
 
 
