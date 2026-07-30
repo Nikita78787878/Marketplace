@@ -6,9 +6,9 @@ spring:
     name: Marketplace
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/marketplace_db
-    username: postgres
-    password: admin
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
