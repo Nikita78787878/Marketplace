@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,7 @@ public class Product {
     @JoinTable(name = "product_tag",
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     public Product() {
     }
@@ -111,7 +112,7 @@ public class Product {
     }
     /**
      * хитрость
-     * равильно понял: константный hashCode → все объекты в одной корзине HashSet → поиск внутри неё O(n), а не O(1).
+     * правильно понял: константный hashCode → все объекты в одной корзине HashSet → поиск внутри неё O(n), а не O(1).
      *
      * Почему миримся: корректность важнее скорости. Альтернатива (hashCode по изменяемым полям) не «медленнее» — она ломает HashSet вообще: объект меняет цену → меняет бакет → теряется навсегда. А entity редко держат пачками в HashSet, так что потеря O(1) на практике незаметна. Выбираем «медленнее, но правильно».
      *
