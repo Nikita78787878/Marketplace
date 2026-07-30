@@ -11,6 +11,13 @@ public class Tag {
     @SequenceGenerator(name = "tag_seq", sequenceName = "tag_seq", allocationSize = 50)
     private Long id;
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
+    public Tag() {
+    }
+
     private String name;
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
@@ -34,6 +41,11 @@ public class Tag {
         if (!(o instanceof Tag tag)) return false;
         return id != null && id.equals(tag.id);
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     @Override
     public int hashCode() {

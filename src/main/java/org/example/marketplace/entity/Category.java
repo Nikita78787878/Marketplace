@@ -2,6 +2,7 @@ package org.example.marketplace.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY) // хотя по дефолту лейзи, но пишут всегда бест практик
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Category() {
     }
@@ -41,6 +42,14 @@ public class Category {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.example.marketplace.mapper;
 
-import org.example.marketplace.dto.CreateProductRequest;
-import org.example.marketplace.dto.ProductResponse;
+import org.example.marketplace.dto.product.CreateProductRequest;
+import org.example.marketplace.dto.product.ProductResponse;
 import org.example.marketplace.entity.Category;
 import org.example.marketplace.entity.Product;
 import org.example.marketplace.entity.Tag;

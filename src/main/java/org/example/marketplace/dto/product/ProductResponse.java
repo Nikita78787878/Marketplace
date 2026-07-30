@@ -1,4 +1,4 @@
-package org.example.marketplace.dto;
+package org.example.marketplace.dto.product;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,10 +1,9 @@
-package org.example.marketplace.dto;
+package org.example.marketplace.dto.product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import org.example.marketplace.entity.Tag;
 
 import java.math.BigDecimal;
 import java.util.List;

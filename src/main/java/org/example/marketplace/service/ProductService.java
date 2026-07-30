@@ -1,8 +1,8 @@
 package org.example.marketplace.service;
 
-import org.example.marketplace.dto.CreateProductRequest;
-import org.example.marketplace.dto.ProductResponse;
-import org.example.marketplace.dto.UpdateProductRequest;
+import org.example.marketplace.dto.product.CreateProductRequest;
+import org.example.marketplace.dto.product.ProductResponse;
+import org.example.marketplace.dto.product.UpdateProductRequest;
 import org.example.marketplace.entity.Category;
 import org.example.marketplace.entity.Product;
 import org.example.marketplace.entity.Tag;
@@ -46,6 +46,7 @@ public class ProductService {
         return mapper.entityToDto(entity);
     }
 
+    @Transactional
     public ProductResponse addProduct(CreateProductRequest product) {
 
         // сущности достаём в сервисе (в транзакции) и передаём в маппер готовыми — маппер в БД не ходит
@@ -76,7 +77,14 @@ public class ProductService {
         return mapper.entityToDto(oldProduct);
     }
 
+    /**
+     * В Spring Data 3+ deleteById для несуществующего id ничего не делает и не падает.
+     * Клиент удаляет id=99999 → получает 200 OK. На проде: либо if (!repository.existsById(id)) throw new NotFoundException(...),
+     * либо findById().orElseThrow() + delete(). И @Transactional сюда же
+     */
+    @Transactional
     public void delete(Long id) {
+        if(!productRepository.existsById(id)) throw new NotFoundException("Product " + id + " not found");
         productRepository.deleteById(id);
     }
 }
