@@ -11,6 +11,13 @@ import java.util.List;
 
 @Component
 public class ProductMapper {
+    private final CategoryMapper categoryMapper;
+    private final TagMapper tagMapper;
+
+    public ProductMapper(CategoryMapper categoryMapper, TagMapper tagMapper) {
+        this.categoryMapper = categoryMapper;
+        this.tagMapper = tagMapper;
+    }
 
     public ProductResponse entityToDto(Product product){
         return new ProductResponse(
@@ -19,8 +26,8 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getPrice(),
                 product.getStockQuantity(),
-                product.getCategory().getId(),
-                product.getTags().stream().map(Tag::getId).toList()
+                categoryMapper.entityToDto(product.getCategory()),
+                product.getTags().stream().map(tagMapper::entityToDto).toList()
         );
     }
 

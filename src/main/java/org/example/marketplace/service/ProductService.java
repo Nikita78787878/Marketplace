@@ -11,6 +11,9 @@ import org.example.marketplace.mapper.ProductMapper;
 import org.example.marketplace.repository.CategoryRepository;
 import org.example.marketplace.repository.ProductRepository;
 import org.example.marketplace.repository.TagRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +36,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> getAllProduct() {
-        return productRepository.findAllWithTags()
+        return productRepository.findAllWithCategoryAndTags()
                 .stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toList());
@@ -86,5 +89,20 @@ public class ProductService {
     public void delete(Long id) {
         if(!productRepository.existsById(id)) throw new NotFoundException("Product " + id + " not found");
         productRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public PagedModel<ProductResponse> getPageProductsBad(Pageable pageble) {
+        Page<Product> pageProduct = productRepository.findAll(pageble); // под капотом понимает даже писать не надо
+        Page<ProductResponse> pageProductDto = pageProduct.map(mapper::entityToDto);
+        return new PagedModel<>(pageProductDto);
+
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getPageProductsGood(Pageable pageble) {
+        Page<Product> pageProductCategory = productRepository.findPageWithCategory(pageble);
+        Page<ProductResponse> pageProductDto = pageProductCategory.map(mapper::entityToDto);
+        return pageProductDto;
     }
 }
