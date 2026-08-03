@@ -1,5 +1,8 @@
 package org.example.marketplace.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.example.marketplace.dto.product.CreateProductRequest;
 import org.example.marketplace.dto.product.ProductResponse;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
 
+@Tag(name = "Товары")
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
@@ -77,6 +81,9 @@ public class ProductController {
         return new PagedModel<>(page);
     }
 
+    @Operation(summary = "Получить товар по id")
+    @ApiResponse(responseCode = "200", description = "Товар найден")
+    @ApiResponse(responseCode = "404", description = "Товар не найден")
     @GetMapping("/{id}")
     public ProductResponse getProduct(@PathVariable Long id){
         return service.getProduct(id);
