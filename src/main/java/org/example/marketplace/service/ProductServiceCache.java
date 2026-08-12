@@ -45,8 +45,12 @@ public class ProductServiceCache {
     public ProductResponse getProductCacheAndQuery(Long id) {
         String key = ProductCacheKeys.key(id);
 
-        ProductResponse cached = redisTemplate.opsForValue()
-                .get(key);
+        ProductResponse cached = null;
+        try {
+            cached = redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            log.error("Не удалось прочитать кеш, key={}", key, e);
+        }
 
         if(cached != null){
             log.info("Получили из кеша"); // Времено для отладки
