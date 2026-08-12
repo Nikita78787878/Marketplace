@@ -10,6 +10,14 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      #т.к. по умолчанию 1 минута
+      timeout: 200ms
+      connect-timeout: 200ms
+
   jpa:
     hibernate:
       ddl-auto: validate

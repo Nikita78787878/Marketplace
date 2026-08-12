@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Здесь две стратегии загрузки связей, и выбор между ними зависит от одного:
@@ -40,6 +41,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     @Query("select distinct p from Product p left join fetch p.category left join fetch p.tags")
     List<Product> findAllWithCategoryAndTags();
+
+
+    @Query("select p from Product p left join fetch p.category left join fetch p.tags where p.id = :id")
+    Optional<Product> findByIdWithCategoryAndTags(Long id);
 
     /**
      * Постраничная выдача — то, что реально должно использоваться в каталоге.
