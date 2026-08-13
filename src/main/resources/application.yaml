@@ -17,6 +17,8 @@ spring:
       #т.к. по умолчанию 1 минута
       timeout: 200ms
       connect-timeout: 200ms
+  cache:
+    type: redis
 
   jpa:
     hibernate:

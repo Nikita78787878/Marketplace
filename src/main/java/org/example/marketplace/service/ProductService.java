@@ -15,14 +15,11 @@ import org.example.marketplace.repository.ProductRepository;
 import org.example.marketplace.repository.TagRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +30,6 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final ProductMapper mapper;
-
-    private final RedisTemplate<String, ProductResponse> redisTemplate;
-    private static final String CACHE_KEY_PREFIX = "product:";
-    private static final Duration CACHE_TTL = Duration.ofMinutes(1);
 
 
     @Transactional(readOnly = true)
@@ -54,29 +47,6 @@ public class ProductService {
         return mapper.entityToDto(entity);
     }
 
-    // Транзакция нужна на cache miss: маппер дёргает ленивые tags/category, OSIV выключен.
-    // На cache hit транзакция открывается вхолостую, но JDBC-коннекшн Hibernate берёт лениво — пул не страдает.
-    @Transactional(readOnly = true)
-    public ProductResponse getProductCacheAndQuery(Long id) {
-        String key = CACHE_KEY_PREFIX + id;
-
-        ProductResponse cached = redisTemplate.opsForValue()
-                .get(key);
-
-        if(cached != null){
-            log.info("Получили из кеша"); // Времено для отладки
-            return cached;
-        }
-
-        // findById возвращает Optional — безопаснее getById (deprecated): не упадём с NPE, сами решаем что делать при отсутствии
-        Product entity = productRepository.findByIdWithCategoryAndTags(id).orElseThrow(() -> new NotFoundException("Product " + id + " not found"));
-
-        ProductResponse response = mapper.entityToDto(entity);
-        redisTemplate.opsForValue().set(key, response, CACHE_TTL);
-        log.info("Пришлось ложить в кеш");
-
-        return response;
-    }
 
     @Transactional
     public ProductResponse addProduct(CreateProductRequest product) {

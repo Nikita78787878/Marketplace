@@ -1,4 +1,4 @@
-package org.example.marketplace.service;
+package org.example.marketplace.service.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

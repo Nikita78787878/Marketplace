@@ -88,6 +88,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--        Для работы через аннотации с кешем AOP-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
 
 
         <!-- Source: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
