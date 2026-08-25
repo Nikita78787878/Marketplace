@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -53,7 +54,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
                 .anyRequest().denyAll() // все остальное запрещено
-        ).httpBasic(Customizer.withDefaults()) //  Включает HTTP Basic Authentication — самый простой стандартный способ представиться.
+        ).httpBasic(basic -> basic.securityContextRepository(
+                        new HttpSessionSecurityContextRepository())) //  Включает HTTP Basic Authentication — самый простой стандартный способ представиться.
         // Логин и пароль склеиваются в логин:пароль, кодируются в Base64 и едут в заголовке каждого запроса
 
         .csrf(AbstractHttpConfigurer::disable);
