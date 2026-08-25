@@ -36,6 +36,10 @@ public class Tag {
         return products;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,13 +47,11 @@ public class Tag {
         return id != null && id.equals(tag.id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
+
 }

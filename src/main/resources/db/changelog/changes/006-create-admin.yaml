@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-admin
+      author: nikita
+      comment: >
+        Стартовый администратор для локальной разработки.
+        Пароль admin123 (BCrypt). Для прода так делать НЕЛЬЗЯ —
+        пароль должен приходить из переменной окружения и меняться при первом входе.
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT count(*) FROM users WHERE username = 'admin'
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO users (id, username, password, role)
+              VALUES (nextval('user_seq'), 'admin',
+                      '$2a$10$SZP7KdV.NNFod34mDi7WVeBxkKktp3nYhBdWjzrhrTYCkRz415btW',
+                      'ADMIN')
+      rollback:
+        - delete:
+            tableName: users
+            where: username = 'admin'

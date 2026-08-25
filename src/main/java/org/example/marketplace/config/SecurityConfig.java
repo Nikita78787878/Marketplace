@@ -66,25 +66,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //справочник пользователей
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder){
-
-        //  UserDetails внутряняя штука security имя, пароль, роль, залочен или нет и так далее
-        UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("123456"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails nikita = User.withUsername("nikita")
-                .password(encoder.encode("123456")) // security неползвоялет хранить пароли в открытом досступе
-                // хеширует пароль от юзака и то что лежит в бд и сравнивает, обратно из хеша восстановить не получиться
-                .roles("USER")
-
-                .build();
-
-        // Сохрнаяет в оперативной памяти
-        return new InMemoryUserDetailsManager(admin, nikita);
-
-    }
 }

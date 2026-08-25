@@ -30,11 +30,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
     }
 
-
     @ExceptionHandler(NotFoundException.class) // Смотрим где этот класс вызывается перехватывае и выкидываем
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex){
         ErrorResponse body = new ErrorResponse( 404, ex.getMessage()); // наш формат ошибок
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(AuthUserAlreadyException.class)
+    public ResponseEntity<ErrorResponse> authUserAlready(AuthUserAlreadyException ex){
+        ErrorResponse body = new ErrorResponse( 409, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+
     }
 
     @Override
