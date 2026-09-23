@@ -3,10 +3,14 @@ package org.example.marketplace.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -57,9 +61,44 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Кодировщик кодирует что в БД не лежал в открытую пароль
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     *
+     * Делаем для работы по JWT токену
+     *
+     * AuthenticationManager - интерфейс, одна точка входа для проверки:
+     *   Authentication authenticate(Authentication) - на входе непроверенный
+     *   конверт (логин+пароль), на выходе проверенный (кто + роли) или исключение.
+     *   
+     *    ProviderManager - реализация. Сам не проверяет, держит список провайдеров
+     *   и отдаёт конверт тому, кто умеет с таким типом работать (supports()).
+     *
+     * DaoAuthenticationProvider  - настоящая проверка: просит юзера у UserDetailsService,
+     * зовёт PasswordEncoder, проверяет флаги, принимает решение
+     *
+     * UserDetailsService - дай юзера по логину
+     *
+     * PasswordEncoder - совпадает ли пароль с этим хешем
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder){
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(userDetailsService);
+
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(provider);
+
     }
 
 }

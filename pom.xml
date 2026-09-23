@@ -88,19 +88,24 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--  Для работы через аннотации с кешем AOP-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
         <!--  Security     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!--        Для работы через аннотации с кешем AOP-->
+
+        <!--  OAuth 2.0 — это протокол авторизации (не аутентификации!), который позволяет приложению получать ограниченный доступ к ресурсам пользователя на другом сервисе, не запрашивая его пароль.     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
-
-
 
         <!-- Source: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
         <dependency>

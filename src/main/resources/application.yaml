@@ -1,6 +1,10 @@
 server:
   port: 8070
 
+jwt:
+  secret: ${JWT_SECRET}
+  ttl: 15m
+
 spring:
   application:
     name: Marketplace

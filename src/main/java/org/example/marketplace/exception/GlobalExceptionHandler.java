@@ -1,5 +1,6 @@
 package org.example.marketplace.exception;
 
+import org.springframework.security.core.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -40,7 +41,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> authUserAlready(AuthUserAlreadyException ex){
         ErrorResponse body = new ErrorResponse( 409, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex){
+        ErrorResponse body = new ErrorResponse(401, "Неверный логин или пароль");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
     @Override
