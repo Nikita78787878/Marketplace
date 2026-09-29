@@ -1,7 +1,6 @@
 package org.example.marketplace.security;
 
 import lombok.AllArgsConstructor;
-import org.example.marketplace.entity.User;
 import org.example.marketplace.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +21,7 @@ public class AppUserDetailService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles(user.getRole().name())
+                .roles(user.getRole().name()) //  -> добавляет ROLE_
                 .build();
 
     }
