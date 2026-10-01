@@ -88,7 +88,13 @@ public class SecurityConfig {
         AccessDeniedHandler deniedHandler){
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll() // доступ для всех
+                    // Swagger открыт всем — ЭТО ТОЛЬКО ДЛЯ DEV.
+                    // В проде схема API анонимно видна быть не должна:
+                    // отключать профилем или закрывать hasRole("ADMIN").
+                .requestMatchers("/auth/**",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**").permitAll() // доступ для всех
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").authenticated() // залогиненнный
                 .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN") // только админу
                 .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
