@@ -46,9 +46,10 @@ exception   -> свои исключения + глобальный обрабо
 
 | Фаза | Тема | Статус |
 |---|---|---|
-| 0 | Скелет монолита: каталог, JPA/Hibernate, Liquibase | 🔄 в работе |
-| 1 | Безопасность: Spring Security + JWT | ⬜ не начато |
-| 2 | Кеширование: Redis | ⬜ не начато |
+| 0 | Скелет монолита: каталог, JPA/Hibernate, Liquibase | ✅ готово |
+| 1 | Безопасность: Spring Security + JWT (свой, HS256) | ✅ готово |
+| 1.5 | Keycloak: OAuth2/OIDC, resource server, RS256 | 🔄 в работе |
+| 2 | Кеширование: Redis | ✅ готово |
 | 3 | Контейнеризация: Docker, docker-compose | ⬜ не начато |
 | 4 | Распил на микросервисы: Gateway, Eureka, OpenFeign | ⬜ не начато |
 | 5 | Асинхронность: Apache Kafka | ⬜ не начато |
