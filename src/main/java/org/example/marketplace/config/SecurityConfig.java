@@ -1,29 +1,23 @@
 package org.example.marketplace.config;
 
-import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.example.marketplace.exception.ErrorResponse;
+import org.example.marketplace.security.KeycloakRealmRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableWebSecurity
@@ -91,7 +85,7 @@ public class SecurityConfig {
                     // Swagger открыт всем — ЭТО ТОЛЬКО ДЛЯ DEV.
                     // В проде схема API анонимно видна быть не должна:
                     // отключать профилем или закрывать hasRole("ADMIN").
-                .requestMatchers("/auth/**",
+                .requestMatchers(
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**").permitAll() // доступ для всех
@@ -124,75 +118,15 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Кодировщик кодирует что в БД не лежал в открытую пароль
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
-    /**
-     *
-     * Делаем для работы по JWT токену
-     *
-     * AuthenticationManager - интерфейс, одна точка входа для проверки:
-     *   Authentication authenticate(Authentication) - на входе непроверенный
-     *   конверт (логин+пароль), на выходе проверенный (кто + роли) или исключение.
-     *   
-     *    ProviderManager - реализация. Сам не проверяет, держит список провайдеров
-     *   и отдаёт конверт тому, кто умеет с таким типом работать (supports()).
-     *
-     * DaoAuthenticationProvider  - настоящая проверка: просит юзера у UserDetailsService,
-     * зовёт PasswordEncoder, проверяет флаги, принимает решение
-     *
-     * UserDetailsService - дай юзера по логину
-     *
-     * PasswordEncoder - совпадает ли пароль с этим хешем
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder){
 
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(userDetailsService);
 
-        provider.setPasswordEncoder(passwordEncoder);
 
-        return new ProviderManager(provider);
-
-    }
-
-    /**
-     *  Дефолтный конвертер заточен под OAuth2,
-     *  где права лежат в claim scope. Мы назвали свой claim roles — и никто не обязан был догадаться.
-     *
-     * JwtGrantedAuthoritiesConverter	читает один claim → список GrantedAuthority
-     * JwtAuthenticationConverter	обёртка: берёт Jwt, зовёт первый, собирает Authentication
-     *
-     *
-     * Jwt{sub:"admin", roles:"ROLE_ADMIN"}
-     *         |
-     *         v
-     * JwtGrantedAuthoritiesConverter
-     *    claim "roles" -> "ROLE_ADMIN" -> split по пробелу -> [ROLE_ADMIN]
-     *         |
-     *         v
-     * JwtAuthenticationConverter
-     *    principal = sub, authorities = [ROLE_ADMIN]
-     *         |
-     *         v
-     * Authentication -> hasRole("ADMIN") ✔
-     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter authorities = new JwtGrantedAuthoritiesConverter();
-        authorities.setAuthoritiesClaimName("roles");   // наш claim вместо "scope"
-        authorities.setAuthorityPrefix("");             // префикс уже внутри строки
-
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(authorities);
+        converter.setJwtGrantedAuthoritiesConverter(new KeycloakRealmRoleConverter());
+        converter.setPrincipalClaimName("preferred_username");
         return converter;
     }
 

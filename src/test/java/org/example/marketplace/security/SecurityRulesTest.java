@@ -1,17 +1,18 @@
 package org.example.marketplace.security;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.jayway.jsonpath.JsonPath;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -60,22 +61,35 @@ class SecurityRulesTest {
   }
 
   @Test
-  void login_thenAccessProtectedEndpoint_withRealToken() throws Exception {
-    // 1. логинимся — permitAll, токен не нужен
-    String response = mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"username\":\"admin\",\"password\":\"admin123\"}"))
-        .andExpect(status().isOk())
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    String token = JsonPath.read(response, "$.token");
-
-    // 2. идём с этим токеном на ручку, требующую ROLE_ADMIN
+  void deleteProduct_withKeycloakAdminClaims_returns204() throws Exception {
     mockMvc.perform(delete("/api/v1/products/1")
-            .header("Authorization", "Bearer " + token))
+            .with(keycloakJwt("ADMIN")))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  void deleteProduct_withKeycloakUserClaims_returns403() throws Exception {
+    mockMvc.perform(delete("/api/v1/products/1")
+            .with(keycloakJwt("USER")))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void deleteProduct_withoutRealmAccessClaim_returns403() throws Exception {
+    mockMvc.perform(delete("/api/v1/products/1")
+            .with(jwt().authorities(new KeycloakRealmRoleConverter())))
+        .andExpect(status().isForbidden());
+  }
+
+  /**
+   * Токен в форме Keycloak: роли лежат в realm_access.roles.
+   * authorities(...) обязателен — без него jwt() берёт права из "scope"
+   * своим дефолтным конвертером и наш KeycloakRealmRoleConverter не вызывается.
+   */
+  private static JwtRequestPostProcessor keycloakJwt(String... roles) {
+    return jwt()
+        .jwt(j -> j.claim("realm_access", Map.of("roles", List.of(roles))))
+        .authorities(new KeycloakRealmRoleConverter());
   }
 
   @Test
