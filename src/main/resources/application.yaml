@@ -1,6 +1,12 @@
 server:
   port: 8070
 
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: marketplace-swagger
+      use-pkce-with-authorization-code-grant: true
+
 spring:
   application:
     name: Marketplace

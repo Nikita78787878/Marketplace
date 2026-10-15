@@ -2,7 +2,9 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.3    # конкретная версия, НЕ latest
     container_name: marketplace-keycloak
-    command: start-dev                  # dev-режим: без HTTPS, БД внутри контейнера
+    command: start-dev --import-realm                # dev-режим: без HTTPS, БД внутри контейнера
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
